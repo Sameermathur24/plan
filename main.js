@@ -129,14 +129,14 @@ async function submitToGoogleForm() {
     'Arcade': 'Arcade',
     'Fine-Dine': 'fine dine',
     'Movie': 'Movie',
-    'Playing to Win': 'comp',
-    'Casual & Chill': 'csh',
-    "I'll just watch": 'watch',
-    'Indian': 'ind',
-    'Italian': 'itl',
+    'Playing to Win': 'competitive',
+    'Casual & Chill': 'casual',
+    "I'll just watch": 'just watch',
+    'Indian': 'indian',
+    'Italian': 'italian',
     'Asian': 'asian',
-    'Continental': 'cont',
-    'Surprise Me': 'surprise',
+    'Continental': 'continental',
+    'Surprise Me': 'surprise me',
     "Yes! Let's go": 'Option 1',
     "Sign me up!": 'Option 2'
   };
@@ -151,15 +151,22 @@ async function submitToGoogleForm() {
   }
 
   formData.append('fvv', '1');
-  formData.append('fbzx', '-2632326227040557772');
+  formData.append('fbzx', '-2856387655256458764');
   formData.append('pageHistory', '0');
   formData.append('submissionTimestamp', Math.floor(Date.now() * 1000).toString());
 
-  fetch(FORM_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: formData
-  });
+  console.log('Submitting form data:', Object.fromEntries(formData));
+
+  try {
+    const response = await fetch(FORM_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    });
+    console.log('Form submission response:', response);
+  } catch (error) {
+    console.error('Form submission error:', error);
+  }
 }
 
 function showSendingState() {
