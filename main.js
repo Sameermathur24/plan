@@ -124,68 +124,55 @@ function showSubmitCard() {
 async function submitToGoogleForm() {
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfw_qv-3ICKaZrK35Ij7CrIgVo4hzXuCUJcOYOgsjnMUsgWvg/formResponse';
   
-  // Mapping app labels to exact Google Form internal choice strings
   const mappings = {
-    // Scene -> Energy
     'Cafe + Board Games': 'Cafe',
     'Arcade': 'Arcade',
     'Fine-Dine': 'fine dine',
     'Movie': 'Movie',
-    
-    // Gamer -> Game Mode
     'Playing to Win': 'comp',
     'Casual & Chill': 'csh',
     "I'll just watch": 'watch',
-    
-    // Cuisine -> Cravings
     'Indian': 'ind',
     'Italian': 'itl',
     'Asian': 'asian',
     'Continental': 'cont',
     'Surprise Me': 'surprise',
-    
-    // Intro
-    'Yes! Let\'s go': 'Option 1',
-    'Sign me up!': 'Option 2'
+    "Yes! Let's go": 'Option 1',
+    "Sign me up!": 'Option 2'
   };
 
-  const formData = new URLSearchParams();
-  formData.append('entry.758634490', mappings[selections['intro']] || selections['intro']);
-  formData.append('entry.276271924', mappings[selections['scene']] || selections['scene']);
-  formData.append('entry.397002179', mappings[selections['gamer']] || selections['gamer']);
-  formData.append('entry.292349101', mappings[selections['cuisine']] || selections['cuisine']);
+  const form = document.createElement('form');
+  form.action = FORM_URL;
+  form.method = 'POST';
+  form.style.display = 'none';
+  document.body.appendChild(form);
 
-  try {
-    // We use a hidden iframe to avoid CORS issues and navigation
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.name = 'hidden_iframe';
-    document.body.appendChild(iframe);
+  const addField = (name, value) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  };
 
-    const form = document.createElement('form');
-    form.action = FORM_URL;
-    form.method = 'POST';
-    form.target = 'hidden_iframe';
-
-    for (const [key, value] of formData.entries()) {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-
-    // Clean up
-    setTimeout(() => {
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-    }, 1000);
-  } catch (error) {
-    console.error('Google Form submission failed:', error);
+  addField('entry.758634490', mappings[selections['intro']] || selections['intro']);
+  addField('entry.276271924', mappings[selections['scene']] || selections['scene']);
+  addField('entry.292349101', mappings[selections['cuisine']] || selections['cuisine']);
+  
+  if (selections['gamer']) {
+    addField('entry.397002179', mappings[selections['gamer']] || selections['gamer']);
   }
+
+  addField('fvv', '1');
+  addField('fbzx', '-2632326227040557772');
+  addField('pageHistory', '0');
+  addField('submissionTimestamp', Math.floor(Date.now() * 1000).toString());
+
+  form.submit();
+
+  setTimeout(() => {
+    document.body.removeChild(form);
+  }, 2000);
 }
 
 function showSendingState() {
