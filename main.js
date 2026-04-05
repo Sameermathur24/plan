@@ -141,38 +141,25 @@ async function submitToGoogleForm() {
     "Sign me up!": 'Option 2'
   };
 
-  const form = document.createElement('form');
-  form.action = FORM_URL;
-  form.method = 'POST';
-  form.style.display = 'none';
-  document.body.appendChild(form);
-
-  const addField = (name, value) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = name;
-    input.value = value;
-    form.appendChild(input);
-  };
-
-  addField('entry.758634490', mappings[selections['intro']] || selections['intro']);
-  addField('entry.276271924', mappings[selections['scene']] || selections['scene']);
-  addField('entry.292349101', mappings[selections['cuisine']] || selections['cuisine']);
+  const formData = new URLSearchParams();
+  formData.append('entry.758634490', mappings[selections['intro']] || selections['intro']);
+  formData.append('entry.276271924', mappings[selections['scene']] || selections['scene']);
+  formData.append('entry.292349101', mappings[selections['cuisine']] || selections['cuisine']);
   
   if (selections['gamer']) {
-    addField('entry.397002179', mappings[selections['gamer']] || selections['gamer']);
+    formData.append('entry.397002179', mappings[selections['gamer']] || selections['gamer']);
   }
 
-  addField('fvv', '1');
-  addField('fbzx', '-2632326227040557772');
-  addField('pageHistory', '0');
-  addField('submissionTimestamp', Math.floor(Date.now() * 1000).toString());
+  formData.append('fvv', '1');
+  formData.append('fbzx', '-2632326227040557772');
+  formData.append('pageHistory', '0');
+  formData.append('submissionTimestamp', Math.floor(Date.now() * 1000).toString());
 
-  form.submit();
-
-  setTimeout(() => {
-    document.body.removeChild(form);
-  }, 2000);
+  fetch(FORM_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData
+  });
 }
 
 function showSendingState() {
